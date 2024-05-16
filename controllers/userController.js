@@ -89,101 +89,6 @@ const verify = async (req, res) => {
   }
 };
 
-// @desc    add a favourite place
-// @route   POST /api/users/favourites
-// @access  Private
-const addFavourites = async (req, res) => {
-  const { city } = req.headers;
-
-  try {
-    // Extract access token from header.
-    const UUID = req.headers.uuid;
-    if (!UUID) {
-      throw new Error("Unauthorised access to route");
-    }
-
-    // find user in db by id
-    const user = await User.findById(UUID);
-
-    if (!user) {
-      throw new Error("User not found in db");
-    }
-
-    // prevent adding more than 5 favourite cities
-    if (user.favouritePlaces.length >= 5) {
-      throw new Error("Favourite places cannot be more than 5");
-    }
-
-    // prevent adding repeated cities
-    if (user.favouritePlaces.includes(city)) {
-      throw new Error("City already added in favourites");
-    }
-
-    // push the city name to user's favourite
-    user.favouritePlaces.push(city);
-
-    // save user in db
-    const savedUser = await user.save();
-    console.log(`${city} stored in DB`)
-
-    successResponse(
-      res,
-      201,
-      { favouritePlaces: savedUser.favouritePlaces },
-      "City added to favourites"
-    );
-  } catch (error) {
-    errorResponse(res, 400, error.message);
-  }
-
-  // res.json({ message: "response from addToFav" });
-};
-
-// @desc    remove a favourite place
-// @route   PATCH /api/users/favourites
-// @access  Private
-const removeFromFavourites = async (req, res) => {
-  const { city } = req.headers;
-
-  try {
-    // Extract access token from header.
-    const UUID = req.headers.uuid;
-    if (!UUID) {
-      throw new Error("Unauthorised access to route");
-    }
-
-    // find user in db by id
-    const user = await User.findById(UUID);
-
-    if (!user) {
-      throw new Error("User not found in db");
-    }
-
-
-    // remove the city from favourites
-    if(user.favouritePlaces.includes(city)) {
-      const idxToRemove = user.favouritePlaces.indexOf(city)
-      user.favouritePlaces.splice(idxToRemove, 1)
-      
-    }
-
-    // save user in db
-    const savedUser = await user.save();
-    console.log(`${city} removed from DB`)
-
-    successResponse(
-      res,
-      201,
-      { favouritePlaces: savedUser.favouritePlaces },
-      "City removed from favourites"
-    );
-  } catch (error) {
-    errorResponse(res, 400, error.message);
-  }
-
-  // res.json({ message: "response from addToFav" });
-};
-
 const uploadProfilePic = async (req, res) => {
   const UUID = req.headers.uuid;
   if (!UUID) {
@@ -277,4 +182,4 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-export { signUp, verify, addFavourites, removeFromFavourites, uploadProfilePic, getUserById, getAllUsers };
+export { signUp, verify, uploadProfilePic, getUserById, getAllUsers };
