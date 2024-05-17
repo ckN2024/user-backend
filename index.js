@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 7000;
 
 // cors configuration
 var corsOptions = {
-  origin: "http://localhost:5173",
+  origin: "*",
   optionsSuccessStatus: 200,
 };
 
